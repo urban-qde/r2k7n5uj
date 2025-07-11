@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (act === 'new')   return resetLevel();
     if (act === 'save')  return saveLevel();
     if (act === 'upload')return sendLevel('/play-level');
-    if (act === 'store') return sendLevel('/save-level');
+    if (act === 'copy') return copyLevel();
     if (act === 'load')  return loadLevel();
   });
 
@@ -395,6 +395,15 @@ document.addEventListener('DOMContentLoaded', function() {
       await w.write(data);
       await w.close();
     } catch(e){}
+  }
+
+  async function copyLevel() {
+    var data = buildLevelJson();
+    try {
+      await navigator.clipboard.writeText(data);
+    } catch(e) {
+      alert('Failed to copy');
+    }
   }
 
   function sendLevel(url) {
