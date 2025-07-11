@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Level Editor</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="level-settings">
+      <h2>Level Settings</h2>
+    
+      <label for="level-name">Level Name:</label>
+      <input id="level-name" type="text" value="My Custom Level">
+    
+      <label for="level-seed">Seed:</label>
+      <input id="level-seed" type="number" value="12345">
+    
+      <label for="level-moves">Moves:</label>
+      <input id="level-moves" type="number" value="30">
+      <label for="level-mode">Game Mode:</label>
+        <select id="level-mode">
+          <option value="clearAll">Clear All</option>
+          <option value="collection">Collection</option>
+          <option value="score">Score</option>
+        </select>
+      <label for="powerup-chance">PowerUp Spawn Chance (0–1):</label>
+      <input id="powerup-chance" type="number" step="0.01" min="0" max="1" value="0">
+      <div class="shape-group-section">
+        <label><strong>Shape Groups:</strong></label>
+        <div class="shape-group-checkboxes">
+          <label><input type="checkbox" id="shape-easy">Easy</label>
+          <label><input type="checkbox" id="shape-hard">Hard</label>
+          <label><input type="checkbox" id="shape-helper">Helper</label>
+        </div>
+      </div>      
+          
+      <div class="level-goals">
+        <h3>Goals</h3>
+        <div id="goals-list"></div>
+        <button id="add-goal-button" type="button">+ Add Goal</button>
+      </div>
+      <div class="level-group-weights">
+        <h3>Shape Group Weights</h3>
+        <div id="group-weights-list"></div>
+        <button id="add-group-weight-button" type="button">+ Add Group Weight</button>
+      </div>
+      <div class="level-shape-weights">
+        <h3>Shape Weights</h3>
+        <div id="shape-weights-list"></div>
+        <button id="add-weight-button" type="button">+ Add Shape Weight</button>
+      </div>      
+      <div class="level-starting-shapes">
+        <h3>Starting Shapes</h3>
+        <div id="starting-shapes-list"></div>
+        <button id="add-starting-shape-button" type="button">+ Add Starting Shape</button>
+      </div>
+    </div>
+      
+    <div class="grid-section">
+      <div class="grid" id="grid"></div>
+      <div class="grid-toolbar">
+        <button id="prev-grid" type="button">&lt;</button>
+        <span id="grid-indicator">Grid 1/1</span>
+        <button id="next-grid" type="button">&gt;</button>
+        <button id="add-grid" type="button">+ Add Grid</button>
+        <button id="remove-grid" type="button">- Remove Grid</button>
+      </div>
+    </div>
+  
+    <div class="sidebar">
+      <div class="palette-buttons-grid" id="palette-buttons"></div>
+  
+      <div class="palette-actions">
+        <button class="clear-button" data-action="new">New</button>
+        <button class="save-button" data-action="save">Save</button>
+        <button class="load-button" data-action="load">Load</button>
+        <button class="upload-button" data-action="upload">Play</button>
+        <button class="upload-save-button" data-action="store">Store on device</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="paletteDefinitions.js"></script>
+  <script src="shapeDefinitions.js"></script>
+  <script src="editor.js"></script>
+</body>
+</html>
