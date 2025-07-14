@@ -19,4 +19,4 @@ These options map to the fields of `LevelConfigData` which is part of the `Level
 
 ### Saving and Loading
 
-Use the **Save** button to export your level to a local JSON file and **Load** to restore a previously saved file. The **Copy to clipboard** action copies the current level data as JSON. In game you can press **Ctrl+V** to immediately play the copied level or open the console with **Esc** and choose **Load From Clipboard**.
+Use the **Save** button to export your level to a local JSON file and **Load** to restore a previously saved file. The **Copy to clipboard** action copies the current level data as JSON. In game you can press **Ctrl+V** to immediately play the copied level or open the console with **Esc** or the settings button in the top right corner and choose **Load From Clipboard**.
