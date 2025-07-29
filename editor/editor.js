@@ -60,6 +60,14 @@ document.addEventListener('DOMContentLoaded', function() {
     return inp;
   }
 
+  function cloneData(data) {
+    if (data == null) return null;
+    if (typeof structuredClone === 'function') {
+      return structuredClone(data);
+    }
+    return JSON.parse(JSON.stringify(data));
+  }
+
   function createRemoveButton(listEl, entryEl) {
     var btn = document.createElement('button');
     btn.type = 'button';
@@ -211,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
     d.itemType = activeDef.type === 'void' ? null : activeDef.type;
     d.id       = activeDef.id;
     d.itemData = activeDef.defaultData
-      ? structuredClone(activeDef.defaultData)
+      ? cloneData(activeDef.defaultData)
       : null;
   }
 
@@ -387,14 +395,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function saveLevel() {
     var data = buildLevelJson();
-    try {
-      var handle = await window.showSaveFilePicker({
-        types:[{description:'JSON Files',accept:{'application/json':['.json']}}]
-      });
-      var w = await handle.createWritable();
-      await w.write(data);
-      await w.close();
-    } catch(e){}
+    if (window.showSaveFilePicker) {
+      try {
+        var handle = await window.showSaveFilePicker({
+          types:[{description:'JSON Files',accept:{'application/json':['.json']}}]
+        });
+        var w = await handle.createWritable();
+        await w.write(data);
+        await w.close();
+        return;
+      } catch(e) {
+        // fall back to download
+      }
+    }
+    var blob = new Blob([data], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = (levelName.value||'level') + '.json';
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+    a.remove();
   }
 
   async function copyLevel() {
