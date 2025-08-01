@@ -16,6 +16,14 @@ const paletteDefinitions = [
     defaultData: null
   },
   {
+    id: "balloon",
+    label: "Balloon",
+    type: "balloon",
+    icon: "images/balloon.png",
+    cellType: "normal",
+    defaultData: null
+  },
+  {
     id: "bomb",
     label: "Bomb",
     type: "bomb",
