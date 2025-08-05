@@ -1071,29 +1071,13 @@ kbd {
 
   .sidebar-left,
   .sidebar-right {
-    max-height: 300px;
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .grid-section {
     height: auto;
     padding: 20px 0;
-  }
-}
-
-@media (max-width: 600px) {
-  .sidebar-left,
-  .sidebar-right {
-    max-height: none;
-    overflow-y: visible;
-  }
-
-  .palette-panel {
-    overflow-y: auto;
-  }
-
-  .grid-section {
-    width: 100%;
   }
 
   .grid-header {
@@ -1115,5 +1099,15 @@ kbd {
   .cell {
     width: 32px;
     height: 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .palette-panel {
+    overflow-y: auto;
+  }
+
+  .grid-section {
+    width: 100%;
   }
 }
