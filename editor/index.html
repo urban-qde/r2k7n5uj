@@ -162,7 +162,6 @@
         <div class="palette-grid" id="palette-buttons"></div>
         
         <div class="actions-section">
-          <h4>Actions</h4>
           <div class="action-buttons">
             <button class="action-btn undo-btn" data-action="undo">
               <span class="btn-icon">↩️</span>
@@ -197,8 +196,8 @@
               <span>Screenshot</span>
             </button>
           </div>
-          
-          <div class="shortcuts-info">
+          <button class="shortcuts-btn" aria-label="Keyboard Shortcuts">?</button>
+          <div id="shortcuts-popup" class="shortcuts-info hidden">
             <h5>Shortcuts</h5>
             <div class="shortcut">
               <kbd>Shift</kbd> + <kbd>Click</kbd> = Clear cell

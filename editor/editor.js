@@ -46,6 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
   var grid                = document.getElementById('grid');
   var paletteButtonsGrid  = document.getElementById('palette-buttons');
   var paletteActions      = document.querySelector('.action-buttons');
+  var shortcutsBtn        = document.querySelector('.shortcuts-btn');
+  var shortcutsPopup      = document.getElementById('shortcuts-popup');
 
   var prevGridButton     = document.getElementById('prev-grid');
   var nextGridButton     = document.getElementById('next-grid');
@@ -452,6 +454,21 @@ document.addEventListener('DOMContentLoaded', function() {
     if (act === 'screenshot') return screenshotGrid();
     if (act === 'load')  return loadLevel();
   });
+
+  if (shortcutsBtn && shortcutsPopup) {
+    shortcutsBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      shortcutsPopup.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!shortcutsPopup.classList.contains('hidden') &&
+          !shortcutsPopup.contains(e.target) &&
+          e.target !== shortcutsBtn) {
+        shortcutsPopup.classList.add('hidden');
+      }
+    });
+  }
 
   function resetLevel() {
     document.querySelectorAll('.cell').forEach(function(cell){
