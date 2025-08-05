@@ -2,82 +2,200 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Level Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <div class="level-settings">
-      <h2>Level Settings</h2>
-    
-      <label for="level-name">Level Name:</label>
-      <input id="level-name" type="text" value="My Custom Level">
-    
-      <label for="level-seed">Seed:</label>
-      <input id="level-seed" type="number" value="0">
-    
-      <label for="level-moves">Moves:</label>
-      <input id="level-moves" type="number" value="25">
-      <label for="level-mode">Game Mode:</label>
-        <select id="level-mode">
-          <option value="clearAll">Clear All</option>
-          <option value="collection">Collection</option>
-          <option value="score">Score</option>
-        </select>
-      <label for="powerup-chance">PowerUp Spawn Chance (0–1):</label>
-      <input id="powerup-chance" type="number" step="0.01" min="0" max="1" value="0">
-      <div class="shape-group-section">
-        <label><strong>Shape Groups:</strong></label>
-        <div class="shape-group-checkboxes">
-          <label><input type="checkbox" id="shape-easy">Easy</label>
-          <label><input type="checkbox" id="shape-hard">Hard</label>
-          <label><input type="checkbox" id="shape-helper">Helper</label>
+  <div class="app-container">
+<div class="sidebar-left">
+      <div class="settings-panel">
+        <div class="panel-header">
+          <div class="header-content">
+            <h2>⚙️ Level Settings</h2>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+              <span class="theme-icon">🌙</span>
+            </button>
+          </div>
         </div>
-      </div>      
+        
+        <div class="settings-section">
+          <div class="form-group">
+            <label for="level-name">Level Name</label>
+            <input id="level-name" type="text" value="My Custom Level">
+          </div>
           
-      <div class="level-goals">
-        <h3>Goals</h3>
-        <div id="goals-list"></div>
-        <button id="add-goal-button" type="button">+ Add Goal</button>
-      </div>
-      <div class="level-group-weights">
-        <h3>Shape Group Weights</h3>
-        <div id="group-weights-list"></div>
-        <button id="add-group-weight-button" type="button">+ Add Group Weight</button>
-      </div>
-      <div class="level-shape-weights">
-        <h3>Shape Weights</h3>
-        <div id="shape-weights-list"></div>
-        <button id="add-weight-button" type="button">+ Add Shape Weight</button>
-      </div>      
-      <div class="level-starting-shapes">
-        <h3>Starting Shapes</h3>
-        <div id="starting-shapes-list"></div>
-        <button id="add-starting-shape-button" type="button">+ Add Starting Shape</button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="level-seed">Seed</label>
+              <input id="level-seed" type="number" value="0">
+            </div>
+            <div class="form-group">
+              <label for="level-moves">Moves</label>
+              <input id="level-moves" type="number" value="25">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="powerup-chance">PowerUp Spawn Chance</label>
+              <input id="powerup-chance" type="number" step="0.01" min="0" max="1" value="0">
+            </div>
+            <div class="form-group">
+              <label for="level-mode">Game Mode</label>
+              <select id="level-mode">
+                <option value="clearAll">Clear All</option>
+                <option value="collection">Collection</option>
+                <option value="score">Score</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="gridWidth">Grid Width</label>
+              <input id="gridWidth" type="number" min="2" max="11" value="8">
+            </div>
+            <div class="form-group">
+              <label for="gridHeight">Grid Height</label>
+              <input id="gridHeight" type="number" min="2" max="11" value="8">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Shape Groups</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="shape-easy">
+                <span>Easy</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="shape-hard">
+                <span>Hard</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="shape-helper">
+                <span>Helper</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="collapsible-section">
+          <button class="section-toggle" data-target="goals-section" data-section="goals">
+            <span class="toggle-text">🎯 Goals</span>
+            <span class="toggle-icon">▼</span>
+          </button>
+          <div class="section-content" id="goals-section">
+            <div id="goals-list" class="items-list"></div>
+            <button id="add-goal-button" type="button" class="add-button">+ Add Goal</button>
+          </div>
+        </div>
+        
+        <div class="collapsible-section">
+          <button class="section-toggle" data-target="group-weights-section" data-section="group-weights">
+            <span class="toggle-text">👥 Group Weights</span>
+            <span class="toggle-icon">▼</span>
+          </button>
+          <div class="section-content collapsed" id="group-weights-section">
+            <div id="group-weights-list" class="items-list"></div>
+            <button id="add-group-weight-button" type="button" class="add-button">+ Add Group Weight</button>
+          </div>
+        </div>
+        
+        <div class="collapsible-section">
+          <button class="section-toggle" data-target="shape-weights-section" data-section="shape-weights">
+            <span class="toggle-text">⚖️ Shape Weights</span>
+            <span class="toggle-icon">▼</span>
+          </button>
+          <div class="section-content collapsed" id="shape-weights-section">
+            <div id="shape-weights-list" class="items-list"></div>
+            <button id="add-weight-button" type="button" class="add-button">+ Add Shape Weight</button>
+          </div>
+        </div>
+        
+        <div class="collapsible-section">
+          <button class="section-toggle" data-target="starting-shapes-section" data-section="starting-shapes">
+            <span class="toggle-text">🚀 Starting Shapes</span>
+            <span class="toggle-icon">▼</span>
+          </button>
+          <div class="section-content collapsed" id="starting-shapes-section">
+            <div id="starting-shapes-list" class="items-list"></div>
+            <button id="add-starting-shape-button" type="button" class="add-button">+ Add Starting Shape</button>
+          </div>
+        </div>
       </div>
     </div>
-      
-    <div class="grid-section">
-      <div class="grid" id="grid"></div>
-      <div class="grid-toolbar">
-        <button id="prev-grid" type="button">&lt;</button>
-        <span id="grid-indicator">Grid 1/1</span>
-        <button id="next-grid" type="button">&gt;</button>
-        <button id="add-grid" type="button">+ Add Grid</button>
-        <button id="remove-grid" type="button">- Remove Grid</button>
+    
+    <div class="main-content">
+      <div class="grid-section">
+        <div class="grid-header">
+          <h3>🎮 Level Grid</h3>
+          <div class="grid-controls">
+            <div class="grid-toolbar">
+              <button id="prev-grid" type="button" class="nav-button">‹</button>
+              <span id="grid-indicator" class="grid-indicator">Grid 1/1</span>
+              <button id="next-grid" type="button" class="nav-button">›</button>
+              <button id="add-grid" type="button" class="action-button">+ Grid</button>
+              <button id="remove-grid" type="button" class="action-button remove">- Grid</button>
+            </div>
+          </div>
+        </div>
+        <div class="grid-container">
+          <div class="grid" id="grid"></div>
+        </div>
       </div>
     </div>
-  
-    <div class="sidebar">
-      <div class="palette-buttons-grid" id="palette-buttons"></div>
-  
-      <div class="palette-actions">
-        <button class="clear-button" data-action="new">New</button>
-        <button class="save-button" data-action="save">Save</button>
-        <button class="load-button" data-action="load">Load</button>
-        <button class="upload-button" data-action="upload">Play</button>
-        <button class="upload-save-button" data-action="copy">Copy to clipboard</button>
+    
+    <div class="sidebar-right">
+        <div class="palette-panel">
+        <div class="panel-header">
+          <div class="header-content">
+            <h2>🎨 Tools</h2>
+          </div>
+          <input type="text" id="palette-search" placeholder="Search tools..." class="search-input">
+        </div>
+        
+        <div class="palette-grid" id="palette-buttons"></div>
+        
+        <div class="actions-section">
+          <h4>Actions</h4>
+          <div class="action-buttons">
+            <button class="action-btn new-btn" data-action="new">
+              <span class="btn-icon">🆕</span>
+              <span>New</span>
+            </button>
+            <button class="action-btn save-btn" data-action="save">
+              <span class="btn-icon">💾</span>
+              <span>Save</span>
+            </button>
+            <button class="action-btn load-btn" data-action="load">
+              <span class="btn-icon">📁</span>
+              <span>Load</span>
+            </button>
+            <button class="action-btn upload-btn" data-action="upload">
+              <span class="btn-icon">🎮</span>
+              <span>Play</span>
+            </button>
+            <button class="action-btn copy-btn" data-action="copy">
+              <span class="btn-icon">📋</span>
+              <span>Copy</span>
+            </button>
+          </div>
+          
+          <div class="shortcuts-info">
+            <h5>Shortcuts</h5>
+            <div class="shortcut">
+              <kbd>Shift</kbd> + <kbd>Click</kbd> = Clear cell
+            </div>
+            <div class="shortcut">
+              <kbd>Ctrl</kbd> + <kbd>S</kbd> = Save level
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
