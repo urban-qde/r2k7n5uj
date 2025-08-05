@@ -269,15 +269,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ——— Grid init ———
   var cellElements = [];
-  
+
+  function getCellSize() {
+    var gridStyle = getComputedStyle(grid);
+    return parseInt(gridStyle.getPropertyValue('--cell-size')) || 52;
+  }
+
   function updateGridSize() {
     // Clear existing cells
     grid.innerHTML = '';
     cellElements = [];
-    
+
     var totalCells = gridWidth * gridHeight;
-    grid.style.gridTemplateColumns = `repeat(${gridWidth}, 52px)`;
-    grid.style.gridTemplateRows = `repeat(${gridHeight}, 52px)`;
+    var cellSize = getCellSize();
+    grid.style.gridTemplateColumns = `repeat(${gridWidth}, ${cellSize}px)`;
+    grid.style.gridTemplateRows = `repeat(${gridHeight}, ${cellSize}px)`;
     
     for (var i = 0; i < totalCells; i++) {
       var cell = document.createElement('div');
@@ -311,8 +317,9 @@ document.addEventListener('DOMContentLoaded', function() {
       renderGridCells();
     }
   }
-  
+
   updateGridSize();
+  window.addEventListener('resize', updateGridSize);
   grid.addEventListener('mousedown', function(e){
     e.preventDefault(); // Prevent drag and drop behavior
     isMouseDown = true;
