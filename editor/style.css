@@ -1068,15 +1068,52 @@ kbd {
     height: auto;
     min-height: 100vh;
   }
-  
+
   .sidebar-left,
   .sidebar-right {
     max-height: 300px;
     overflow-y: auto;
   }
-  
+
   .grid-section {
     height: auto;
     padding: 20px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar-left,
+  .sidebar-right {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .palette-panel {
+    overflow-y: auto;
+  }
+
+  .grid-section {
+    width: 100%;
+  }
+
+  .grid-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .grid-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .grid {
+    width: 100%;
+    grid-template-columns: repeat(8, 32px);
+    grid-template-rows: repeat(8, 32px);
+  }
+
+  .cell {
+    width: 32px;
+    height: 32px;
   }
 }
