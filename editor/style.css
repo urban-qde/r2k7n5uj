@@ -959,6 +959,24 @@ body {
   background: #475569;
 }
 
+.undo-btn {
+  background: var(--secondary);
+  color: white;
+}
+
+.undo-btn:hover {
+  background: #475569;
+}
+
+.redo-btn {
+  background: var(--secondary);
+  color: white;
+}
+
+.redo-btn:hover {
+  background: #475569;
+}
+
 .shortcuts {
   padding-top: 12px;
   border-top: 1px solid var(--border);

@@ -164,6 +164,14 @@
         <div class="actions-section">
           <h4>Actions</h4>
           <div class="action-buttons">
+            <button class="action-btn undo-btn" data-action="undo">
+              <span class="btn-icon">↩️</span>
+              <span>Undo</span>
+            </button>
+            <button class="action-btn redo-btn" data-action="redo">
+              <span class="btn-icon">↪️</span>
+              <span>Redo</span>
+            </button>
             <button class="action-btn new-btn" data-action="new">
               <span class="btn-icon">🆕</span>
               <span>New</span>
@@ -184,6 +192,10 @@
               <span class="btn-icon">📋</span>
               <span>Copy</span>
             </button>
+            <button class="action-btn screenshot-btn" data-action="screenshot">
+              <span class="btn-icon">📸</span>
+              <span>Screenshot</span>
+            </button>
           </div>
           
           <div class="shortcuts-info">
@@ -193,6 +205,12 @@
             </div>
             <div class="shortcut">
               <kbd>Ctrl</kbd> + <kbd>S</kbd> = Save level
+            </div>
+            <div class="shortcut">
+              <kbd>Ctrl</kbd> + <kbd>Z</kbd> = Undo
+            </div>
+            <div class="shortcut">
+              <kbd>Ctrl</kbd> + <kbd>Y</kbd> = Redo
             </div>
           </div>
         </div>

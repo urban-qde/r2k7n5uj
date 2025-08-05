@@ -83,6 +83,45 @@ document.addEventListener('DOMContentLoaded', function() {
   var gridWidth = 8;
   var gridHeight = 8;
 
+  // Undo/Redo state
+  var undoStack = [];
+  var redoStack = [];
+  var suppressUndo = false;
+  var maxUndo = 100;
+
+  function recordState() {
+    if (suppressUndo) return;
+    undoStack.push(buildLevelJson());
+    if (undoStack.length > maxUndo) undoStack.shift();
+    redoStack = [];
+  }
+
+  function applyState(json) {
+    suppressUndo = true;
+    var lvl = JSON.parse(json);
+    loadLevelObject(lvl);
+    suppressUndo = false;
+  }
+
+  function undo() {
+    if (!undoStack.length) return;
+    redoStack.push(buildLevelJson());
+    var prev = undoStack.pop();
+    applyState(prev);
+  }
+
+  function redo() {
+    if (!redoStack.length) return;
+    undoStack.push(buildLevelJson());
+    var next = redoStack.pop();
+    applyState(next);
+  }
+
+  [levelName, levelSeed, levelMoves, levelMode, powerupChance,
+   flagEasy, flagHard, flagHelper].forEach(function(el){
+    el.addEventListener('change', recordState);
+  });
+
   // ——— Helpers ———
   function createSelect(options, onChange, initial) {
     var sel = document.createElement('select');
@@ -118,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.textContent = '×';
     btn.className = 'remove-item-button';
     btn.addEventListener('click', function(){
+      recordState();
       listEl.removeChild(entryEl);
       updateSectionCounts();
     });
@@ -127,7 +167,10 @@ document.addEventListener('DOMContentLoaded', function() {
   function createEntry(listEl, fieldEls) {
     var entry = document.createElement('div');
     entry.className = 'item-entry';
-    fieldEls.forEach(function(el){ entry.appendChild(el); });
+    fieldEls.forEach(function(el){
+      entry.appendChild(el);
+      el.addEventListener('change', recordState);
+    });
     entry.appendChild(createRemoveButton(listEl, entry));
     listEl.appendChild(entry);
     return entry;
@@ -270,7 +313,8 @@ document.addEventListener('DOMContentLoaded', function() {
   updateGridSize();
   grid.addEventListener('mousedown', function(e){
     e.preventDefault(); // Prevent drag and drop behavior
-    isMouseDown = true; 
+    isMouseDown = true;
+    recordState();
     handleCellEvent(e);
   });
   grid.addEventListener('mouseover', function(e){
@@ -291,6 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
   gridData = grids[0].cells;
   renderGridCells();
   setGridIndicatorText();
+  recordState();
 
   prevGridButton.addEventListener('click', function(){
     if (currentGrid > 0) loadGrid(currentGrid - 1);
@@ -299,10 +344,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (currentGrid < grids.length - 1) loadGrid(currentGrid + 1);
   });
   addGridButton.addEventListener('click', function(){
+    recordState();
     addNewGrid();
   });
   removeGridButton.addEventListener('click', function(){
     if (grids.length <= 1) return;
+    recordState();
     grids.splice(currentGrid, 1);
     var newIndex = Math.min(currentGrid, grids.length - 1);
     currentGrid = -1;
@@ -314,14 +361,16 @@ document.addEventListener('DOMContentLoaded', function() {
   var gridHeightInput = document.getElementById('gridHeight');
   
   gridWidthInput.addEventListener('input', function(){
+    recordState();
     let value = parseInt(this.value);
     if (value < 2) this.value = 2;
     if (value > 11) this.value = 11;
     gridWidth = parseInt(this.value);
     updateGridSize();
   });
-  
+
   gridHeightInput.addEventListener('input', function(){
+    recordState();
     let value = parseInt(this.value);
     if (value < 2) this.value = 2;
     if (value > 11) this.value = 11;
@@ -394,10 +443,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // ——— Palette actions ———
   paletteActions.addEventListener('click', function(e){
     var act = e.target.dataset.action;
-    if (act === 'new')   return resetLevel();
+    if (act === 'undo')  return undo();
+    if (act === 'redo')  return redo();
+    if (act === 'new')   { recordState(); return resetLevel(); }
     if (act === 'save')  return saveLevel();
     if (act === 'upload')return sendLevel('/play-level');
     if (act === 'copy') return copyLevel();
+    if (act === 'screenshot') return screenshotGrid();
     if (act === 'load')  return loadLevel();
   });
 
@@ -424,6 +476,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ——— Add … handlers ———
   addGoalButton.addEventListener('click', function(){
+    recordState();
     // unique item types
     var types = Array.from(new Set(
       paletteDefinitions.map(function(d){return d.type;})
@@ -438,6 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   addShapeWeightButton.addEventListener('click', function(){
+    recordState();
     var opts = shapeDefinitions.map(function(s){
       return {value:s.type,label:s.label,icon:s.icon};
     });
@@ -453,6 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   addGroupWeightButton.addEventListener('click', function(){
+    recordState();
     var groups = ['Easy','Hard','Helper'].map(function(g){
       return {value:g,label:g};
     });
@@ -463,6 +518,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   addStartingShapeButton.addEventListener('click', function(){
+    recordState();
     var shapeOpts = shapeDefinitions.map(function(s){
       return {value:s.type,label:s.label,icon:s.icon};
     });
@@ -582,6 +638,109 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  async function screenshotGrid() {
+    // Prepare canvas based on grid layout
+    var gridStyle = window.getComputedStyle(grid);
+    var cellSize = parseInt(gridStyle.getPropertyValue('--cell-size')) || 52;
+    var gap = parseInt(gridStyle.gap) || 3;
+    var padding = parseInt(gridStyle.padding) || 12;
+
+    var canvas = document.createElement('canvas');
+    canvas.width = padding * 2 + gridWidth * cellSize + (gridWidth - 1) * gap;
+    canvas.height = padding * 2 + gridHeight * cellSize + (gridHeight - 1) * gap;
+    var ctx = canvas.getContext('2d');
+
+    // Draw grid background
+    var gridBg = gridStyle.backgroundColor || 'white';
+    ctx.fillStyle = gridBg;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Gather all icons that need loading
+    var iconPaths = {};
+    gridData.forEach(function(cell) {
+      ['base', 'item', 'overlay'].forEach(function(slot) {
+        var obj = cell[slot];
+        if (!obj) return;
+        var def = paletteDefinitions.find(function(p) { return p.id === obj.id; });
+        if (def) iconPaths[def.icon] = null;
+      });
+    });
+
+    // Load images
+    await Promise.all(Object.keys(iconPaths).map(function(path) {
+      return new Promise(function(resolve, reject) {
+        var img = new Image();
+        if (location.protocol !== 'file:') img.crossOrigin = 'anonymous';
+        img.onload = function() { iconPaths[path] = img; resolve(); };
+        img.onerror = reject;
+        img.src = path;
+      });
+    }));
+
+    // Draw cells
+    for (var i = 0; i < cellElements.length; i++) {
+      var row = Math.floor(i / gridWidth);
+      var col = i % gridWidth;
+      var x = padding + col * (cellSize + gap);
+      var y = padding + row * (cellSize + gap);
+
+      var cell = gridData[i];
+      var cellElement = cellElements[i];
+
+      // Draw cell background
+      var bgColor = window.getComputedStyle(cellElement).backgroundColor;
+      if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)') {
+        ctx.fillStyle = bgColor;
+      } else if (cell.cellType === 'void') {
+        ctx.fillStyle = '#aaa';
+      } else {
+        ctx.fillStyle = 'white';
+      }
+      ctx.fillRect(x, y, cellSize, cellSize);
+
+      // Draw border
+      ctx.strokeStyle = '#ddd';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, cellSize, cellSize);
+
+      // Draw item images base -> item -> overlay
+      ['base', 'item', 'overlay'].forEach(function(slot) {
+        var obj = cell[slot];
+        if (!obj) return;
+        var def = paletteDefinitions.find(function(p) { return p.id === obj.id; });
+        var img = def && iconPaths[def.icon];
+        if (img) ctx.drawImage(img, x, y, cellSize, cellSize);
+      });
+    }
+
+    function downloadBlob(blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'grid.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert('Screenshot downloaded!');
+    }
+
+    canvas.toBlob(function(blob) {
+      if (navigator.clipboard && window.ClipboardItem && location.protocol !== 'file:') {
+        navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]).then(function() {
+          alert('Screenshot copied to clipboard!');
+        }).catch(function(err) {
+          alert('Clipboard failed: ' + err.message);
+          downloadBlob(blob);
+        });
+      } else {
+        downloadBlob(blob);
+      }
+    }, 'image/png');
+  }
+
   function sendLevel(url) {
     fetch(url, {
       method:'POST',
@@ -594,96 +753,96 @@ document.addEventListener('DOMContentLoaded', function() {
     .catch(function(){ alert('Failed'); });
   }
 
-  function loadLevel() {
-    var inp = document.createElement('input');
-    inp.type = 'file';
-    inp.accept = '.json';
-    inp.addEventListener('change', function(e){
-      var file = e.target.files[0];
-      if (!file) return;
-      file.text().then(function(txt){
-        var lvl = JSON.parse(txt);
-        resetLevel();
-        // restore simple fields
-        levelName.value     = lvl.name||'';
-        levelSeed.value     = lvl.config.seed||0;
-        levelMoves.value    = lvl.config.moves||20;
-        levelMode.value     = lvl.config.mode;        
-        powerupChance.value = lvl.config.powerUpSpawnOnShapeChance||0;
-        var grp = lvl.config.shapeGroup||0;
-        flagEasy.checked   = !!(grp&1);
-        flagHard.checked   = !!(grp&2);
-        flagHelper.checked = !!(grp&4);
-        // restore grids
-        grids = [];
-        currentGrid = -1;
-        var gridArr = Array.isArray(lvl.grids) && lvl.grids.length > 0
-          ? lvl.grids
-          : [{ width:lvl.width, height:lvl.height, cells:lvl.cells, targets:lvl.config ? lvl.config.targets : [] }];
-        gridArr.forEach(function(g){
-          var newGrid = createEmptyGrid();
-          (g.cells||[]).forEach(function(c,i){
-            var gridW = g.width || 8, gridH = g.height || 8;
-            var x = i%gridW, y = Math.floor(i/gridW), fy = (gridH-1)-y, idx = x+fy*gridW;
-            var d = newGrid.cells[idx];
-            d.cellType = c.cellType || 'normal';
-            if (c.item) {
-              d.item = {
-                id: c.item.id,
-                type: c.item.type,
-                data: c.item.data || null
-              };
-            }
-            if (c.base) {
-              d.base = {
-                id: c.base.id,
-                type: c.base.type,
-                data: c.base.data || null
-              };
-            }
-            if (c.overlay) {
-              d.overlay = {
-                id: c.overlay.id,
-                type: c.overlay.type,
-                data: c.overlay.data || null
-              };
-            }
-          });
-          newGrid.targets = g.targets || [];
-          grids.push(newGrid);
-        });
-        loadGrid(0);
-        // restore lists by re-clicking their add buttons then filling values
-        function restore(listName, arr, clickBtn, fillFn) {
-          if (!Array.isArray(arr)) return;
-          arr.forEach(function(item){
-            clickBtn.click();
-            var last = ({goals:goalsList,groupWeights:groupWeightsList,
-                         shapeWeights:shapeWeightsList,
-                         startingShapes:startingShapesList})[listName]
-                      .lastChild;
-            fillFn(last,item);
-          });
-        }
-        restore('groupWeights',  lvl.config.groupWeights, addGroupWeightButton, function(e,it){
-          e.querySelector('select').value = it.group;
-          e.querySelector('input').value  = it.weight;
-        });
-        restore('shapeWeights',  lvl.config.shapeWeights, addShapeWeightButton, function(e,it){
-          var s = e.querySelector('select'), i = e.querySelector('input'), img = e.querySelector('img');
-          s.value = it.type; i.value = it.weight;
-          img.src = shapeDefinitions.find(function(s){return s.type===it.type;}).icon;
-        });
-        restore('startingShapes',lvl.config.startingShapes, addStartingShapeButton, function(e,it){
-          var s = e.querySelectorAll('select'), img = e.querySelector('img');
-          s[0].value = it.type;
-          img.src    = shapeDefinitions.find(function(s){return s.type===it.type;}).icon;
-          s[1].value = it.rotation;
-          s[1].dispatchEvent(new Event('change'));
-        });
-        updateSectionCounts();
-      })
-      .catch(function(){alert('Failed to load');});
+  function loadLevelObject(lvl) {
+  var prev = suppressUndo;
+  suppressUndo = true;
+  if (lvl.grids && lvl.grids[0]) {
+    gridWidth = lvl.grids[0].width || gridWidth;
+    gridHeight = lvl.grids[0].height || gridHeight;
+    gridWidthInput.value = gridWidth;
+    gridHeightInput.value = gridHeight;
+  }
+  resetLevel();
+  updateGridSize();
+  levelName.value     = lvl.name||'';
+  levelSeed.value     = lvl.config.seed||0;
+  levelMoves.value    = lvl.config.moves||20;
+  levelMode.value     = lvl.config.mode;
+  powerupChance.value = lvl.config.powerUpSpawnOnShapeChance||0;
+  var grp = lvl.config.shapeGroup||0;
+  flagEasy.checked   = !!(grp&1);
+  flagHard.checked   = !!(grp&2);
+  flagHelper.checked = !!(grp&4);
+  grids = [];
+  currentGrid = -1;
+  var gridArr = Array.isArray(lvl.grids) && lvl.grids.length > 0
+    ? lvl.grids
+    : [{ width:lvl.width, height:lvl.height, cells:lvl.cells, targets:lvl.config ? lvl.config.targets : [] }];
+  gridArr.forEach(function(g){
+    var newGrid = createEmptyGrid();
+    (g.cells||[]).forEach(function(c,i){
+      var gridW = g.width || gridWidth;
+      var gridH = g.height || gridHeight;
+      var x = i%gridW, y = Math.floor(i/gridW), fy = (gridH-1)-y, idx = x+fy*gridWidth;
+      var d = newGrid.cells[idx];
+      d.cellType = c.cellType || 'normal';
+      if (c.item) {
+        d.item = { id:c.item.id, type:c.item.type, data:c.item.data || null };
+      }
+      if (c.base) {
+        d.base = { id:c.base.id, type:c.base.type, data:c.base.data || null };
+      }
+      if (c.overlay) {
+        d.overlay = { id:c.overlay.id, type:c.overlay.type, data:c.overlay.data || null };
+      }
+    });
+    newGrid.targets = g.targets || [];
+    grids.push(newGrid);
+  });
+  loadGrid(0);
+  function restore(listName, arr, clickBtn, fillFn) {
+    if (!Array.isArray(arr)) return;
+    arr.forEach(function(item){
+      clickBtn.click();
+      var last = ({goals:goalsList,groupWeights:groupWeightsList,
+                   shapeWeights:shapeWeightsList,
+                   startingShapes:startingShapesList})[listName].lastChild;
+      fillFn(last,item);
+    });
+  }
+  restore('groupWeights',  lvl.config.groupWeights, addGroupWeightButton, function(e,it){
+    e.querySelector('select').value = it.group;
+    e.querySelector('input').value  = it.weight;
+  });
+  restore('shapeWeights',  lvl.config.shapeWeights, addShapeWeightButton, function(e,it){
+    var s = e.querySelector('select'), i = e.querySelector('input'), img = e.querySelector('img');
+    s.value = it.type; i.value = it.weight;
+    img.src = shapeDefinitions.find(function(s){return s.type===it.type;}).icon;
+  });
+  restore('startingShapes', lvl.config.startingShapes, addStartingShapeButton, function(e,it){
+    var s = e.querySelectorAll('select'), img = e.querySelector('img');
+    s[0].value = it.type;
+    img.src    = shapeDefinitions.find(function(s){return s.type===it.type;}).icon;
+    s[1].value = it.rotation;
+    s[1].dispatchEvent(new Event('change'));
+  });
+  updateSectionCounts();
+  suppressUndo = prev;
+}
+
+function loadLevel() {
+  var inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.json';
+  inp.addEventListener('change', function(e){
+    var file = e.target.files[0];
+    if (!file) return;
+    file.text().then(function(txt){
+      var lvl = JSON.parse(txt);
+      recordState();
+      loadLevelObject(lvl);
+    })
+    .catch(function(){alert('Failed to load');});
   });
   inp.click();
 }
@@ -748,7 +907,14 @@ document.addEventListener('keydown', function(e) {
       saveLevel();
     } else if (e.key === 'n') {
       e.preventDefault();
+      recordState();
       resetLevel();
+    } else if (e.key === 'z') {
+      e.preventDefault();
+      undo();
+    } else if (e.key === 'y') {
+      e.preventDefault();
+      redo();
     }
   }
 });
