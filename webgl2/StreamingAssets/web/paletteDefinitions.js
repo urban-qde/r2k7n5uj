@@ -3,6 +3,7 @@ const paletteDefinitions = [
     id: "block",
     label: "Block",
     type: "block",
+    slot: "item",
     icon: "images/block.png",
     cellType: "normal",
     defaultData: null
@@ -11,6 +12,7 @@ const paletteDefinitions = [
     id: "goalblock",
     label: "Goal Block",
     type: "goalblock",
+    slot: "item",
     icon: "images/goalblock.png",
     cellType: "normal",
     defaultData: null
@@ -19,6 +21,7 @@ const paletteDefinitions = [
     id: "balloon",
     label: "Balloon",
     type: "balloon",
+    slot: "item",
     icon: "images/balloon.png",
     cellType: "normal",
     defaultData: null
@@ -27,6 +30,7 @@ const paletteDefinitions = [
     id: "bomb",
     label: "Bomb",
     type: "bomb",
+    slot: "item",
     icon: "images/bomb.png",
     cellType: "normal",
     defaultData: null
@@ -35,6 +39,7 @@ const paletteDefinitions = [
     id: "rockethorizontal",
     label: "Rocket Horizontal",
     type: "rockethorizontal",
+    slot: "item",
     icon: "images/rocket_horizontal.png",
     cellType: "normal",
     defaultData: null
@@ -43,6 +48,7 @@ const paletteDefinitions = [
     id: "rocketvertical",
     label: "Rocket Vertical",
     type: "rocketvertical",
+    slot: "item",
     icon: "images/rocket_vertical.png",
     cellType: "normal",
     defaultData: null
@@ -51,6 +57,7 @@ const paletteDefinitions = [
     id: "bombpickup",
     label: "Bomb Pickup",
     type: "bombpickup",
+    slot: "item",
     icon: "images/bomb_pickup.png",
     cellType: "normal",
     defaultData: null
@@ -59,6 +66,7 @@ const paletteDefinitions = [
     id: "rockethorizontalpickup",
     label: "Rocket Horizontal Pickup",
     type: "rockethorizontalpickup",
+    slot: "item",
     icon: "images/rocket_horizontal_pickup.png",
     cellType: "normal",
     defaultData: null
@@ -67,6 +75,7 @@ const paletteDefinitions = [
     id: "rocketverticalpickup",
     label: "Rocket Vertical Pickup",
     type: "rocketverticalpickup",
+    slot: "item",
     icon: "images/rocket_vertical_pickup.png",
     cellType: "normal",
     defaultData: null
@@ -75,6 +84,7 @@ const paletteDefinitions = [
     id: "crate1",
     label: "Crate 1",
     type: "crate",
+    slot: "item",
     icon: "images/crate1.png",
     cellType: "normal", 
     defaultData: { type: "health", health: 1 }
@@ -83,6 +93,7 @@ const paletteDefinitions = [
     id: "crate2",
     label: "Crate 2",
     type: "crate",
+    slot: "item",
     icon: "images/crate2.png",
     cellType: "normal",
     defaultData: { type: "health", health: 2 }
@@ -91,6 +102,7 @@ const paletteDefinitions = [
     id: "crate3",
     label: "Crate 3",
     type: "crate",
+    slot: "item",
     icon: "images/crate3.png",
     cellType: "normal",
     defaultData: { type: "health", health: 3 }
@@ -99,6 +111,7 @@ const paletteDefinitions = [
     id: "metalcrate1",
     label: "Metal Crate 1",
     type: "metalcrate",
+    slot: "item",
     icon: "images/metal_crate1.png",
     cellType: "normal", 
     defaultData: { type: "health", health: 1 }
@@ -107,6 +120,7 @@ const paletteDefinitions = [
     id: "metalcrate2",
     label: "Metal Crate 2",
     type: "metalcrate",
+    slot: "item",
     icon: "images/metal_crate2.png",
     cellType: "normal",
     defaultData: { type: "health", health: 2 }
@@ -115,14 +129,34 @@ const paletteDefinitions = [
     id: "metalcrate3",
     label: "Metal Crate 3",
     type: "metalcrate",
+    slot: "item",
     icon: "images/metal_crate3.png",
     cellType: "normal",
     defaultData: { type: "health", health: 3 }
+  },
+  {
+    id: "ice",
+    label: "Ice Block",
+    type: "ice",
+    slot: "overlay",
+    icon: "images/ice.png",
+    cellType: "normal",
+    defaultData: null
+  },  
+  {
+    id: "hidden",
+    label: "Hidden Block",
+    type: "hidden",
+    slot: "overlay",
+    icon: "images/hidden.png",
+    cellType: "normal",
+    defaultData: null
   },  
   {
     id: "void",
     label: "Void",
     type: "void",
+    slot: "item",
     icon: "images/void.png",
     cellType: "void", // 🔥 Different!
     defaultData: null
