@@ -144,6 +144,15 @@ const paletteDefinitions = [
     defaultData: null
   },  
   {
+    id: "steel",
+    label: "Steel Block",
+    type: "steel",
+    slot: "overlay",
+    icon: "images/steel.png",
+    cellType: "normal",
+    defaultData: null
+  },  
+  {
     id: "hidden",
     label: "Hidden Block",
     type: "hidden",

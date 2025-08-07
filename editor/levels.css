@@ -1,0 +1,27 @@
+.levels-container {
+  padding: 20px;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.level-card {
+  text-align: center;
+}
+
+.level-thumb {
+  width: 100%;
+  padding-top: 100%;
+  background: var(--surface-dark);
+  border-radius: var(--radius);
+}
+
+.level-card a {
+  display: block;
+  margin-top: 8px;
+  text-decoration: none;
+  color: var(--primary);
+}
