@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var paletteActions      = document.querySelector('.action-buttons');
   var shortcutsBtn        = document.querySelector('.shortcuts-btn');
   var shortcutsPopup      = document.getElementById('shortcuts-popup');
+  var levelsLink          = document.getElementById('levels-link');
 
   var prevGridButton     = document.getElementById('prev-grid');
   var nextGridButton     = document.getElementById('next-grid');
@@ -84,6 +85,26 @@ document.addEventListener('DOMContentLoaded', function() {
   var gridData = null; // reference to current grid cells
   var gridWidth = 8;
   var gridHeight = 8;
+
+  var levelId = generateLevelId();
+
+  // Show levels link if server exposes listing
+  fetch('/levels').then(function(res){
+    if(res.ok) {
+      levelsLink.hidden = false;
+      levelsLink.href = '/levels';
+    }
+  }).catch(function(){});
+
+  // Preload level from query parameter
+  var params = new URLSearchParams(window.location.search);
+  var paramLevel = params.get('level');
+  if (paramLevel) {
+    fetch('/levels/' + encodeURIComponent(paramLevel) + '.json')
+      .then(function(r){ if(r.ok) return r.json(); throw new Error('not found'); })
+      .then(function(json){ loadLevelObject(json); })
+      .catch(function(){});
+  }
 
   // Undo/Redo state
   var undoStack = [];
@@ -151,6 +172,17 @@ document.addEventListener('DOMContentLoaded', function() {
       return structuredClone(data);
     }
     return JSON.parse(JSON.stringify(data));
+  }
+
+  function generateLevelId() {
+    if (window.crypto && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0;
+      var v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
   function createRemoveButton(listEl, entryEl) {
@@ -478,6 +510,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function resetLevel() {
+    levelId = generateLevelId();
     document.querySelectorAll('.cell').forEach(function(cell){
       cell.style.backgroundColor = 'white';
       cell.style.backgroundImage = '';
@@ -607,7 +640,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     return JSON.stringify({
       version:1,
-      levelId:'customLevel001',
+      levelId:levelId,
       name:levelName.value||'My Custom Level',
       grids:gridsJson,
       config:{
@@ -787,6 +820,7 @@ document.addEventListener('DOMContentLoaded', function() {
     gridHeightInput.value = gridHeight;
   }
   resetLevel();
+  levelId = lvl.levelId || levelId;
   updateGridSize();
   levelName.value     = lvl.name||'';
   levelSeed.value     = lvl.config.seed||0;
