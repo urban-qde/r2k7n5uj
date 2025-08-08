@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
   var paletteActions      = document.querySelector('.action-buttons');
   var shortcutsBtn        = document.querySelector('.shortcuts-btn');
   var shortcutsPopup      = document.getElementById('shortcuts-popup');
-  var levelsLink          = document.getElementById('levels-link');
 
   var prevGridButton     = document.getElementById('prev-grid');
   var nextGridButton     = document.getElementById('next-grid');
@@ -87,14 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
   var gridHeight = 8;
 
   var levelId = generateLevelId();
-
-  // Show levels link if server exposes listing
-  fetch('/levels').then(function(res){
-    if(res.ok) {
-      levelsLink.hidden = false;
-      levelsLink.href = '/levels';
-    }
-  }).catch(function(){});
 
   // Preload level from query parameter
   var params = new URLSearchParams(window.location.search);
