@@ -1,4 +1,38 @@
-.levels-container {
+.levels-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+}
+
+.levels-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 50%, var(--primary-subtle) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, var(--primary-subtle) 0%, transparent 50%),
+              radial-gradient(circle at 40% 80%, var(--secondary) 0%, transparent 25%);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.levels-panel {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.levels-content {
   padding: 20px;
 }
 
@@ -7,16 +41,77 @@
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
 }
+ 
+.property-panel {
+  flex: 0 0 280px;
+  height: fit-content;
+}
+
+.pagination {
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
 
 .level-card {
   text-align: center;
+  position: relative;
+}
+
+.level-card.selected {
+  box-shadow: 0 0 0 3px var(--primary);
+  border-radius: var(--radius);
+}
+
+.level-number {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: var(--primary);
+  color: var(--text-inverse);
+  padding: 2px 6px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  z-index: 1;
+}
+
+.level-card.drag-over-before::before,
+.level-card.drag-over-after::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+}
+
+.level-card.drag-over-before::before {
+  left: 0;
+  border-left: 4px solid var(--primary);
+}
+
+.level-card.drag-over-after::after {
+  right: 0;
+  border-right: 4px solid var(--primary);
 }
 
 .level-thumb {
+  position: relative;
   width: 100%;
   padding-top: 100%;
   background: var(--surface-dark);
   border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.level-thumb img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .level-card a {

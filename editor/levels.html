@@ -4,13 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Levels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="levels.css">
 </head>
 <body>
-  <div class="levels-container">
-    <h1>Levels</h1>
-    <div id="levels-grid" class="levels-grid"></div>
+  <div class="levels-page">
+    <div class="settings-panel levels-panel">
+      <div class="panel-header">
+        <div class="header-content">
+          <h2>📚 Levels</h2>
+          <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
+            <span class="theme-icon">🌙</span>
+          </button>
+        </div>
+        <div class="pagination">
+          <button id="prev-page" class="nav-button">‹</button>
+          <span id="page-info"></span>
+          <button id="next-page" class="nav-button">›</button>
+        </div>
+      </div>
+
+      <div class="levels-content">
+        <div id="levels-grid" class="levels-grid"></div>
+      </div>
+    </div>
+    <div id="level-properties" class="settings-panel property-panel">
+      <div class="panel-header">
+        <div class="header-content">
+          <h2>🔧 Properties</h2>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="form-group">
+          <label for="prop-id">ID</label>
+          <input id="prop-id" type="text" readonly>
+        </div>
+        <div class="form-group">
+          <label for="prop-ordinal">Ordinal</label>
+          <input type="number" id="prop-ordinal">
+        </div>
+        <button id="prop-update" class="action-button">Update</button>
+        <button id="prop-delete" class="action-button">Delete</button>
+      </div>
+    </div>
   </div>
   <script src="levels.js"></script>
 </body>

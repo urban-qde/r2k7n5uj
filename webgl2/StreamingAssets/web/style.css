@@ -374,14 +374,14 @@ body {
 
 .section-toggle {
   width: 100%;
-  padding: 18px 24px;
+  padding: 12px 16px;
   background: none;
   border: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text);
   transition: var(--transition);
@@ -407,7 +407,7 @@ body {
 }
 
 .section-toggle .toggle-text {
-  margin-left: 24px;
+  margin-left: 16px;
   flex: 1;
   text-align: left;
 }
@@ -439,11 +439,11 @@ body {
 .section-content {
   padding: 0 20px 20px;
   transition: all 0.3s ease;
-  overflow: visible;
   display: flex;
   flex-direction: column;
   max-height: calc(40vh - 60px);
   animation: fadeIn 0.2s ease-out;
+  overflow: hidden;
 }
 
 @keyframes fadeIn {
@@ -459,13 +459,14 @@ body {
 
 .items-list {
   flex: 1;
-  overflow-y: auto;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
-  padding: 4px;
+  padding: 2px;
   min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .items-list:empty {
@@ -475,11 +476,11 @@ body {
 .item-entry {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 8px;
+  padding: 8px 12px;
   background: var(--surface-elevated);
   border-radius: var(--radius);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   transition: var(--transition);
   box-shadow: var(--shadow-subtle);
   border: 1px solid var(--border);
@@ -511,8 +512,8 @@ body {
 }
 
 .item-entry img {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
 }
 
@@ -535,24 +536,25 @@ body {
 
 .add-button {
   width: 100%;
-  padding: 14px 18px;
+  padding: 10px 14px;
   background: var(--gradient-primary);
   color: var(--text-inverse);
   border: none;
   border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   transition: var(--transition);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-medium);
-  min-height: 48px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 8px;
+  flex-shrink: 0;
 }
 
 .add-button::before {
@@ -1066,8 +1068,8 @@ kbd {
 
   .sidebar-left,
   .sidebar-right {
-    max-height: none;
-    overflow-y: visible;
+    max-height: 100vh;
+    overflow-y: auto;
   }
 
   .grid-section {

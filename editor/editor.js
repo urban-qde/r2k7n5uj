@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
   var paletteActions      = document.querySelector('.action-buttons');
   var shortcutsBtn        = document.querySelector('.shortcuts-btn');
   var shortcutsPopup      = document.getElementById('shortcuts-popup');
-  var levelsLink          = document.getElementById('levels-link');
 
   var prevGridButton     = document.getElementById('prev-grid');
   var nextGridButton     = document.getElementById('next-grid');
@@ -87,14 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
   var gridHeight = 8;
 
   var levelId = generateLevelId();
-
-  // Show levels link if server exposes listing
-  fetch('/levels').then(function(res){
-    if(res.ok) {
-      levelsLink.hidden = false;
-      levelsLink.href = '/levels';
-    }
-  }).catch(function(){});
 
   // Preload level from query parameter
   var params = new URLSearchParams(window.location.search);
@@ -488,6 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (act === 'redo')  return redo();
     if (act === 'new')   { recordState(); return resetLevel(); }
     if (act === 'save')  return saveLevel();
+    if (act === 'save-level') return sendLevel('/save-level');
     if (act === 'upload')return sendLevel('/play-level');
     if (act === 'copy') return copyLevel();
     if (act === 'screenshot') return screenshotGrid();
@@ -662,6 +654,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.showSaveFilePicker) {
       try {
         var handle = await window.showSaveFilePicker({
+          suggestedName: levelId + '.json',
           types:[{description:'JSON Files',accept:{'application/json':['.json']}}]
         });
         var w = await handle.createWritable();
@@ -679,7 +672,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = (levelName.value||'level') + '.json';
+    a.download = levelId + '.json';
     document.body.appendChild(a);
     a.click();
     URL.revokeObjectURL(url);
@@ -695,16 +688,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  async function screenshotGrid() {
+  async function screenshotGrid(returnDataUrl) {
     // Prepare canvas based on grid layout
     var gridStyle = window.getComputedStyle(grid);
     var cellSize = parseInt(gridStyle.getPropertyValue('--cell-size')) || 52;
-    var gap = parseInt(gridStyle.gap) || 3;
-    var padding = parseInt(gridStyle.padding) || 12;
+    var gapX = parseInt(gridStyle.columnGap) || parseInt(gridStyle.gap) || 3;
+    var gapY = parseInt(gridStyle.rowGap) || parseInt(gridStyle.gap) || 3;
+    var paddingLeft = parseInt(gridStyle.paddingLeft) || 12;
+    var paddingRight = parseInt(gridStyle.paddingRight) || 12;
+    var paddingTop = parseInt(gridStyle.paddingTop) || 12;
+    var paddingBottom = parseInt(gridStyle.paddingBottom) || 12;
+    var gw = grids[currentGrid] ? grids[currentGrid].width : gridWidth;
+    var gh = grids[currentGrid] ? grids[currentGrid].height : gridHeight;
 
     var canvas = document.createElement('canvas');
-    canvas.width = padding * 2 + gridWidth * cellSize + (gridWidth - 1) * gap;
-    canvas.height = padding * 2 + gridHeight * cellSize + (gridHeight - 1) * gap;
+    canvas.width = paddingLeft + paddingRight + gw * cellSize + (gw - 1) * gapX;
+    canvas.height = paddingTop + paddingBottom + gh * cellSize + (gh - 1) * gapY;
     var ctx = canvas.getContext('2d');
 
     // Draw grid background
@@ -736,10 +735,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Draw cells
     for (var i = 0; i < cellElements.length; i++) {
-      var row = Math.floor(i / gridWidth);
-      var col = i % gridWidth;
-      var x = padding + col * (cellSize + gap);
-      var y = padding + row * (cellSize + gap);
+      var row = Math.floor(i / gw);
+      var col = i % gw;
+      var x = paddingLeft + col * (cellSize + gapX);
+      var y = paddingTop + row * (cellSize + gapY);
 
       var cell = gridData[i];
       var cellElement = cellElements[i];
@@ -770,6 +769,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
+    if (returnDataUrl) {
+      return canvas.toDataURL('image/png');
+    }
+
     function downloadBlob(blob) {
       var url = URL.createObjectURL(blob);
       var a = document.createElement('a');
@@ -798,11 +801,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 'image/png');
   }
 
-  function sendLevel(url) {
+  async function sendLevel(url) {
+    var obj = JSON.parse(buildLevelJson());
+    if (url === '/save-level') {
+      try {
+        obj.screenshot = await screenshotGrid(true);
+      } catch(e) {}
+    }
     fetch(url, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: buildLevelJson()
+      body: JSON.stringify(obj)
     })
     .then(function(r){
       if (!r.ok) throw r.statusText;
