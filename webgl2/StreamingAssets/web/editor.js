@@ -165,6 +165,30 @@ document.addEventListener('DOMContentLoaded', function() {
     return JSON.parse(JSON.stringify(data));
   }
 
+  function normalizeItemType(type) {
+    if (typeof type === 'number') {
+      var base = type & 0xffff;
+      var map = {
+        1: 'block',
+        2: 'goalblock',
+        4: 'bomb',
+        5: 'rockethorizontal',
+        6: 'rocketvertical',
+        7: 'bombpickup',
+        8: 'rockethorizontalpickup',
+        9: 'rocketverticalpickup',
+        10: 'balloon',
+        1000: 'crate',
+        1001: 'metalcrate',
+        2000: 'ice',
+        2001: 'hidden',
+        2002: 'steel'
+      };
+      return map[base] || '';
+    }
+    return (type || '').toString().toLowerCase();
+  }
+
   function generateLevelId() {
     if (window.crypto && crypto.randomUUID) {
       return crypto.randomUUID();
@@ -228,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
     targets.forEach(function(t){
       addGoalButton.click();
       var el = goalsList.lastChild;
-      el.querySelector('select').value = t.type;
+      el.querySelector('select').value = normalizeItemType(t.type);
       el.querySelector('input').value = t.count;
     });
   }
@@ -859,11 +883,13 @@ document.addEventListener('DOMContentLoaded', function() {
       if (c.base) {
         d.base = { id:c.base.id, type:c.base.type, data:c.base.data || null };
       }
-      if (c.overlay) {
-        d.overlay = { id:c.overlay.id, type:c.overlay.type, data:c.overlay.data || null };
-      }
+    if (c.overlay) {
+      d.overlay = { id:c.overlay.id, type:c.overlay.type, data:c.overlay.data || null };
+    }
+  });
+    newGrid.targets = (g.targets || []).map(function(t){
+      return { type: normalizeItemType(t.type), count: t.count };
     });
-    newGrid.targets = g.targets || [];
     grids.push(newGrid);
   });
   loadGrid(0);
