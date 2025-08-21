@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', function() {
   var grids = [];
   var currentGrid = 0;
   var gridData = null; // reference to current grid cells
-  var gridWidth = 8;
-  var gridHeight = 8;
+  var gridWidth = 9;
+  var gridHeight = 9;
 
   var levelId = generateLevelId();
 
@@ -165,28 +165,69 @@ document.addEventListener('DOMContentLoaded', function() {
     return JSON.parse(JSON.stringify(data));
   }
 
+  var itemTypeIdToType = {};
+  var itemTypeCanonical = {};
+  paletteDefinitions.forEach(function(p) {
+    if (typeof p.itemTypeId === 'number') {
+      itemTypeIdToType[p.itemTypeId] = p.type;
+    }
+    itemTypeCanonical[p.type.toLowerCase()] = p.type;
+  });
+
   function normalizeItemType(type) {
     if (typeof type === 'number') {
       var base = type & 0xffff;
-      var map = {
-        1: 'block',
-        2: 'goalblock',
-        4: 'bomb',
-        5: 'rockethorizontal',
-        6: 'rocketvertical',
-        7: 'bombpickup',
-        8: 'rockethorizontalpickup',
-        9: 'rocketverticalpickup',
-        10: 'balloon',
-        1000: 'crate',
-        1001: 'metalcrate',
-        2000: 'ice',
-        2001: 'hidden',
-        2002: 'steel'
-      };
-      return map[base] || '';
+      return itemTypeIdToType[base] || '';
     }
-    return (type || '').toString().toLowerCase();
+    var key = (type || '').toString().toLowerCase();
+    return itemTypeCanonical[key] || key;
+  }
+
+  function normalizeShapeType(type) {
+    if (!type) return '';
+    var t = type.toString().toLowerCase();
+    var match = shapeDefinitions.find(function(s){
+      return s.type.toLowerCase() === t;
+    });
+    return match ? match.type : type;
+  }
+
+  function normalizeGroupName(group) {
+    if (!group) return '';
+    var g = group.toString().toLowerCase();
+    var groups = ['Easy','Hard','Helper'];
+    var match = groups.find(function(x){ return x.toLowerCase() === g; });
+    return match || group;
+  }
+
+  function parseShapeGroup(group) {
+    if (typeof group === 'number') return group;
+    if (Array.isArray(group)) {
+      return group.reduce(function(acc, g){
+        g = g.toString().toLowerCase();
+        if (g === 'easy') acc |= 1;
+        else if (g === 'hard') acc |= 2;
+        else if (g === 'helper') acc |= 4;
+        return acc;
+      }, 0);
+    }
+    if (typeof group === 'string') {
+      return group.split(/[\s,|]+/).reduce(function(acc, g){
+        g = g.toLowerCase();
+        if (g === 'easy') acc |= 1;
+        else if (g === 'hard') acc |= 2;
+        else if (g === 'helper') acc |= 4;
+        return acc;
+      }, 0);
+    }
+    return 0;
+  }
+
+  function normalizeRotation(rot) {
+    if (!rot) return 'Deg0';
+    var key = rot.toString().toLowerCase();
+    var map = { deg0:'Deg0', deg90:'Deg90', deg180:'Deg180', deg270:'Deg270' };
+    return map[key] || rot;
   }
 
   function generateLevelId() {
@@ -420,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
     recordState();
     let value = parseInt(this.value);
     if (value < 2) this.value = 2;
-    if (value > 11) this.value = 11;
+    if (value > 9) this.value = 9;
     gridWidth = parseInt(this.value);
     updateGridSize();
   });
@@ -429,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
     recordState();
     let value = parseInt(this.value);
     if (value < 2) this.value = 2;
-    if (value > 11) this.value = 11;
+    if (value > 9) this.value = 9;
     gridHeight = parseInt(this.value);
     updateGridSize();
   });
@@ -658,6 +699,7 @@ document.addEventListener('DOMContentLoaded', function() {
       version:1,
       levelId:levelId,
       name:levelName.value||'My Custom Level',
+      currentGrid: currentGrid,
       grids:gridsJson,
       config:{
         seed:seed,
@@ -860,10 +902,10 @@ document.addEventListener('DOMContentLoaded', function() {
   levelMoves.value    = lvl.config.moves||20;
   levelMode.value     = lvl.config.mode;
   powerupChance.value = lvl.config.powerUpSpawnOnShapeChance||0;
-  var grp = lvl.config.shapeGroup||0;
-  flagEasy.checked   = !!(grp&1);
-  flagHard.checked   = !!(grp&2);
-  flagHelper.checked = !!(grp&4);
+  var grp = parseShapeGroup(lvl.config.shapeGroup);
+  flagEasy.checked   = !!(grp & 1);
+  flagHard.checked   = !!(grp & 2);
+  flagHelper.checked = !!(grp & 4);
   grids = [];
   currentGrid = -1;
   var gridArr = Array.isArray(lvl.grids) && lvl.grids.length > 0
@@ -892,7 +934,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     grids.push(newGrid);
   });
-  loadGrid(0);
+  var loadIndex = 0;
+  if (typeof lvl.currentGrid === 'number' && lvl.currentGrid >= 0) {
+    loadIndex = Math.min(lvl.currentGrid, grids.length - 1);
+  }
+  loadGrid(loadIndex);
   function restore(listName, arr, clickBtn, fillFn) {
     if (!Array.isArray(arr)) return;
     arr.forEach(function(item){
@@ -904,19 +950,23 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   restore('groupWeights',  lvl.config.groupWeights, addGroupWeightButton, function(e,it){
-    e.querySelector('select').value = it.group;
+    e.querySelector('select').value = normalizeGroupName(it.group);
     e.querySelector('input').value  = it.weight;
   });
   restore('shapeWeights',  lvl.config.shapeWeights, addShapeWeightButton, function(e,it){
     var s = e.querySelector('select'), i = e.querySelector('input'), img = e.querySelector('img');
-    s.value = it.type; i.value = it.weight;
-    img.src = shapeDefinitions.find(function(s){return s.type===it.type;}).icon;
+    var type = normalizeShapeType(it.type);
+    s.value = type; i.value = it.weight;
+    var def = shapeDefinitions.find(function(sd){return sd.type===type;});
+    if (def) img.src = def.icon;
   });
   restore('startingShapes', lvl.config.startingShapes, addStartingShapeButton, function(e,it){
     var s = e.querySelectorAll('select'), img = e.querySelector('img');
-    s[0].value = it.type;
-    img.src    = shapeDefinitions.find(function(s){return s.type===it.type;}).icon;
-    s[1].value = it.rotation;
+    var type = normalizeShapeType(it.type);
+    s[0].value = type;
+    var def = shapeDefinitions.find(function(sd){return sd.type===type;});
+    if (def) img.src = def.icon;
+    s[1].value = normalizeRotation(it.rotation);
     s[1].dispatchEvent(new Event('change'));
   });
   updateSectionCounts();
