@@ -16,6 +16,12 @@
       <div class="panel-header">
         <div class="header-content">
           <h2>📚 Levels</h2>
+          <select id="flow-select"></select>
+          <div class="search-control" role="search">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input id="level-filter" class="search-input" type="search" placeholder="Search name or ID" autocomplete="off" />
+            <button id="level-filter-clear" class="search-clear" type="button" aria-label="Clear search" title="Clear">×</button>
+          </div>
           <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
             <span class="theme-icon">🌙</span>
           </button>
@@ -38,6 +44,7 @@
         </div>
       </div>
       <div class="settings-section">
+        <div class="form-group" id="multi-select-info" style="display:none"></div>
         <div class="form-group">
           <label for="prop-id">ID</label>
           <input id="prop-id" type="text" readonly>
@@ -47,10 +54,33 @@
           <input type="number" id="prop-ordinal">
         </div>
         <button id="prop-update" class="action-button">Update</button>
-        <button id="prop-delete" class="action-button">Delete</button>
+        <button id="prop-duplicate" class="action-button">Duplicate</button>
+        <button id="prop-play" class="action-button">Play</button>
+        <button id="prop-delete" class="action-button remove">Delete</button>
+
+        <div class="form-group" id="tags-group">
+          <label>Tags</label>
+          <div id="tags-list" class="tags-list"></div>
+          <div class="tag-input-group">
+            <input id="tag-input" type="text" list="tags-suggestions" placeholder="Add tag..." autocomplete="off" />
+            <datalist id="tags-suggestions"></datalist>
+            <button id="tag-add" class="action-button" type="button">Add</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="flow-target-select">Target Flow</label>
+          <select id="flow-target-select"></select>
+        </div>
+        <div class="form-group">
+          <button id="prop-copy-to" class="action-button">Copy To Flow</button>
+          <button id="prop-move-to" class="action-button remove">Move To Flow</button>
+        </div>
       </div>
     </div>
   </div>
+  <!-- Toast container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
   <script src="levels.js"></script>
 </body>
 </html>

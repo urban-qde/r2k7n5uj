@@ -10,6 +10,17 @@ const paletteDefinitions = [
     defaultData: null
   },
   {
+    id: "jewelpillar",
+    label: "Jewel Pillar",
+    type: "jewelpillar",
+    itemTypeId: 1007,
+    slot: "item",
+    icon: "images/pillar.png",
+    cellType: "normal",
+    // Designers can mark isAnchor=true on the selected cell
+    defaultData: { type: "jewelpillar", isAnchor: false, groupId: 0 }
+  },
+  {
     id: "goalblock",
     label: "Goal Block",
     type: "goalblock",
@@ -17,7 +28,124 @@ const paletteDefinitions = [
     slot: "item",
     icon: "images/goalblock.png",
     cellType: "normal",
-    defaultData: null
+    defaultData: null,    
+    hidden: true
+  },
+  {
+    id: "coinblock",
+    label: "Coin Block",
+    type: "coinblock",
+    itemTypeId: 14,
+    slot: "item",
+    icon: "images/coins_1.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 1 },    
+  },
+  {
+    id: "coinblock2",
+    label: "Coin Block 2",
+    type: "coinblock",
+    itemTypeId: 14,
+    slot: "item",
+    icon: "images/coins_2.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 2 },
+  },
+  {
+    id: "coinblock3",
+    label: "Coin Block 3",
+    type: "coinblock",
+    itemTypeId: 14,
+    slot: "item",
+    icon: "images/coins_3.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 3 },
+  },
+  {
+    id: "coinblock4",
+    label: "Coin Block 4",
+    type: "coinblock",
+    itemTypeId: 14,
+    slot: "item",
+    icon: "images/coins_4.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 4 },
+  },
+  {
+    id: "coinblock5",
+    label: "Coin Block 5",
+    type: "coinblock",
+    itemTypeId: 14,
+    slot: "item",
+    icon: "images/coins_5.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 5 },
+  },
+  {
+    id: "chestblock",
+    label: "Chest Block",
+    type: "chestblock",
+    itemTypeId: 15,
+    slot: "item",
+    icon: "images/chest_block.png",
+    cellType: "normal",
+    defaultData: null,    
+  },
+  {
+    id: "coin",
+    label: "Coin",
+    type: "coin",
+    itemTypeId: 18,
+    slot: "item",
+    icon: "images/coin.png",
+    cellType: "normal",
+    defaultData: null,
+    isGoal: true,
+    hidden: true
+  },
+  {
+    id: "gem",
+    label: "Gem",
+    type: "gem",
+    itemTypeId: 20,
+    slot: "item",
+    icon: "images/gem.png",
+    cellType: "normal",
+    defaultData: null,
+    isGoal: true,
+    hidden: false
+  },
+  {
+    id: "score",
+    label: "Score",
+    type: "score",
+    itemTypeId: 21,
+    slot: "item",
+    icon: "images/score.png",
+    cellType: "normal",
+    defaultData: null,
+    isGoal: true,
+    hidden: true
+  },
+  {
+    id: "lockedcoin",
+    label: "Locked Coin",
+    type: "lockedcoin",
+    itemTypeId: 16,
+    slot: "item",
+    icon: "images/lockedcoin.png",
+    cellType: "normal",
+    defaultData: null,
+  },
+  {
+    id: "key",
+    label: "Key",
+    type: "key",
+    itemTypeId: 17,
+    slot: "item",
+    icon: "images/key.png",
+    cellType: "normal",
+    defaultData: null,
   },
   {
     id: "balloon",
@@ -27,7 +155,8 @@ const paletteDefinitions = [
     slot: "item",
     icon: "images/balloon.png",
     cellType: "normal",
-    defaultData: null
+    defaultData: null,
+    hidden: true
   },
   {
     id: "bomb",
@@ -97,7 +226,8 @@ const paletteDefinitions = [
     slot: "item",
     icon: "images/2x_pickup.png",
     cellType: "normal",
-    defaultData: { type: "health", health: 2 }
+    defaultData: { type: "health", health: 2 },
+    hidden: true
   },
   {
     id: "multiplierpickup3x",
@@ -107,7 +237,8 @@ const paletteDefinitions = [
     slot: "item",
     icon: "images/3x_pickup.png",
     cellType: "normal",
-    defaultData: { type: "health", health: 3 }
+    defaultData: { type: "health", health: 3 },
+    hidden: true
   },
   {
     id: "multiplierpickup5x",
@@ -117,7 +248,8 @@ const paletteDefinitions = [
     slot: "item",
     icon: "images/5x_pickup.png",
     cellType: "normal",
-    defaultData: { type: "health", health: 5 }
+    defaultData: { type: "health", health: 5 },
+    hidden: true
   },
   {
     id: "bombpickup",
@@ -127,7 +259,8 @@ const paletteDefinitions = [
     slot: "item",
     icon: "images/bomb_pickup.png",
     cellType: "normal",
-    defaultData: null
+    defaultData: null,
+    hidden: true
   },
   {
     id: "rockethorizontalpickup",
@@ -137,7 +270,8 @@ const paletteDefinitions = [
     slot: "item",
     icon: "images/rocket_horizontal_pickup.png",
     cellType: "normal",
-    defaultData: null
+    defaultData: null,
+    hidden: true
   },
   {
     id: "rocketverticalpickup",
@@ -147,7 +281,28 @@ const paletteDefinitions = [
     slot: "item",
     icon: "images/rocket_vertical_pickup.png",
     cellType: "normal",
-    defaultData: null
+    defaultData: null,
+    hidden: true
+  },
+  {
+    id: "rotatingrocketvertical",
+    label: "Rotating Rocket Vertical",
+    type: "rotatingrocket",
+    itemTypeId: 13,
+    slot: "item",
+    icon: "images/rotatingrocket_vertical.png",
+    cellType: "normal",
+    defaultData: {type: "rotatingrocket", isVertical: true}
+  },
+  {
+    id: "rotatingrockethorizontal",
+    label: "Rotating Rocket Horizontal",
+    type: "rotatingrocket",
+    itemTypeId: 13,
+    slot: "item",
+    icon: "images/rotatingrocket_horizontal.png",
+    cellType: "normal",
+    defaultData: {type: "rotatingrocket", isVertical: false}
   },
   {
     id: "crate1",
@@ -157,7 +312,8 @@ const paletteDefinitions = [
     slot: "item",
     icon: "images/crate1.png",
     cellType: "normal",
-    defaultData: { type: "health", health: 1 }
+    defaultData: { type: "health", health: 1 },
+    hidden: true
   },
   {
     id: "crate2",
@@ -210,14 +366,34 @@ const paletteDefinitions = [
     defaultData: { type: "health", health: 3 }
   },
   {
+    id: "safe",
+    label: "safe",
+    type: "safe",
+    itemTypeId: 1006,
+    slot: "item",
+    icon: "images/safe.png",
+    cellType: "normal",
+    defaultData: { type: "safe", health: 3, groupId: 0 }
+  },
+  {
     id: "ice",
     label: "Ice Block",
     type: "ice",
     itemTypeId: 2000,
     slot: "overlay",
-    icon: "images/ice.png",
+    icon: "images/ice1.png",
     cellType: "normal",
-    defaultData: null
+    defaultData: { type: "health", health: 1 }
+  },
+  {
+    id: "ice2",
+    label: "Ice Block 2",
+    type: "ice",
+    itemTypeId: 2000,
+    slot: "overlay",
+    icon: "images/ice2.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 2 }
   },
   {
     id: "steel",
@@ -230,6 +406,106 @@ const paletteDefinitions = [
     defaultData: null
   },
   {
+    id: "magnet",
+    label: "Magnet",
+    type: "magnet",
+    itemTypeId: 1002,
+    slot: "item",
+    icon: "images/magnet.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 1 }
+  },
+  {
+    id: "magnet-active",
+    label: "Magnet Active",
+    type: "magnet",
+    itemTypeId: 1002,
+    slot: "item",
+    icon: "images/magnet-active.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 0 }
+  },
+  {
+    id: "onOff-inactive-1",
+    label: "OnOff Inactive 1",
+    type: "onoff",
+    itemTypeId: 1003,
+    slot: "item",
+    icon: "images/onoff-inactive-1.png",
+    cellType: "normal",
+    defaultData: { type: "onoff", state: false, health: 1 }
+  },
+  {
+    id: "onOff-active-1",
+    label: "OnOff Active 1",
+    type: "onoff",
+    itemTypeId: 1003,
+    slot: "item",
+    icon: "images/onoff-active-1.png",
+    cellType: "normal",
+    defaultData: { type: "onoff", state: true, health: 1 }
+  },
+  {
+    id: "onOff-inactive-2",
+    label: "OnOff Inactive 2",
+    type: "onoff",
+    itemTypeId: 1003,
+    slot: "item",
+    icon: "images/onoff-inactive-2.png",
+    cellType: "normal",
+    defaultData: { type: "onoff", state: false, health: 2 }
+  },
+  {
+    id: "onOff-active-2",
+    label: "OnOff Active 2",
+    type: "onoff",
+    itemTypeId: 1003,
+    slot: "item",
+    icon: "images/onoff-active-2.png",
+    cellType: "normal",
+    defaultData: { type: "onoff", state: true, health: 2 }
+  },
+  {
+    id: "onOff-inactive",
+    label: "OnOff Inactive",
+    type: "onoff",
+    itemTypeId: 1003,
+    slot: "item",
+    icon: "images/onoff-inactive-3.png",
+    cellType: "normal",
+    defaultData: { type: "state", state: false, health: 3 }
+  },
+  {
+    id: "onOff-active",
+    label: "OnOff Active",
+    type: "onoff",
+    itemTypeId: 1003,
+    slot: "item",
+    icon: "images/onoff-active-3.png",
+    cellType: "normal",
+    defaultData: { type: "onoff", state: true, health: 3 }
+  },
+  {
+    id: "droneBlocker",
+    label: "DroneBlocker",
+    type: "droneblocker",
+    itemTypeId: 1008,
+    slot: "item",
+    icon: "images/gift.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 1 }
+  },
+  {
+    id: "droneBlocker2",
+    label: "DroneBlocker 2",
+    type: "droneblocker",
+    itemTypeId: 1008,
+    slot: "item",
+    icon: "images/gift2.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 2 }
+  },
+  {
     id: "hidden",
     label: "Hidden Block",
     type: "hidden",
@@ -238,6 +514,226 @@ const paletteDefinitions = [
     icon: "images/hidden.png",
     cellType: "normal",
     defaultData: null
+  },
+  {
+    id: "arrow-random",
+    label: "Arrow Random",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-random.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 0, direction: 0 }
+  },
+  {
+    id: "arrow-right",
+    label: "Arrow Right",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-right.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 0, direction: 1 }
+  },
+  {
+    id: "arrow-up",
+    label: "Arrow Up",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-up.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 0, direction: 2 }
+  },
+  {
+    id: "arrow-left",
+    label: "Arrow Left",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-left.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 0, direction: 4 }
+  },
+  {
+    id: "arrow-down",
+    label: "Arrow Down",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-down.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 0, direction: 8 }
+  },
+  {
+    id: "arrow-random-2x",
+    label: "Arrow Random 2x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-random-2x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 2, direction: 0 }
+  },
+  {
+    id: "arrow-right-2x",
+    label: "Arrow Right 2x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-right-2x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 2, direction: 1 }
+  },
+  {
+    id: "arrow-up-2x",
+    label: "Arrow Up 2x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-up-2x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 2, direction: 2 }
+  },
+  {
+    id: "arrow-left-2x",
+    label: "Arrow Left 2x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-left-2x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 2, direction: 4 }
+  },
+  {
+    id: "arrow-down-2x",
+    label: "Arrow Down 2x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-down-2x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 2, direction: 8 }
+  },
+  {
+    id: "arrow-random-3x",
+    label: "Arrow Random 3x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-random-3x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 3, direction: 0 }
+  },
+  {
+    id: "arrow-right-3x",
+    label: "Arrow Right 3x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-right-3x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 3, direction: 1 }
+  },
+  {
+    id: "arrow-up-3x",
+    label: "Arrow Up 3x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-up-3x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 3, direction: 2 }
+  },
+  {
+    id: "arrow-left-3x",
+    label: "Arrow Left 3x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-left-3x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 3, direction: 4 }
+  },
+  {
+    id: "arrow-down-3x",
+    label: "Arrow Down 3x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-down-3x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 3, direction: 8 }
+  },
+  {
+    id: "arrow-random-5x",
+    label: "Arrow Random 5x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-random-5x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 5, direction: 0 }
+  },
+  {
+    id: "arrow-right-5x",
+    label: "Arrow Right 5x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-right-5x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 5, direction: 1 }
+  },
+  {
+    id: "arrow-up-5x",
+    label: "Arrow Up 5x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-up-5x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 5, direction: 2 }
+  },
+  {
+    id: "arrow-left-5x",
+    label: "Arrow Left 5x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-left-5x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 5, direction: 4 }
+  },
+  {
+    id: "arrow-down-5x",
+    label: "Arrow Down 5x",
+    type: "arrow",
+    itemTypeId: 1004,
+    slot: "item",
+    icon: "images/arrow-down-5x.png",
+    cellType: "normal",
+    defaultData: { type: "arrow", health: 5, direction: 8 }
+  },
+  {
+    id: "bag1",
+    label: "Bag 1",
+    type: "bag",
+    itemTypeId: 1005,
+    slot: "item",
+    icon: "images/bag1.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 1 }
+  },
+  {
+    id: "bag2",
+    label: "Bag 2",
+    type: "bag",
+    itemTypeId: 1005,
+    slot: "item",
+    icon: "images/bag2.png",
+    cellType: "normal",
+    defaultData: { type: "health", health: 2 }
   },
   {
     id: "void",

@@ -18,4 +18,6 @@ const shapeDefinitions = [
   { type: "SlashMini", label: "Slash Mini", icon: "images/shapes/slash_mini.png" },
   { type: "Factory", label: "Factory", icon: "images/shapes/factory.png" },
   { type: "FactoryReverse", label: "Factory Reverse", icon: "images/shapes/factory_reverse.png" },
+  { type: "U", label: "U", icon: "images/shapes/u.png" },
+  { type: "LBig", label: "LBig", icon: "images/shapes/l_big.png" }
 ];

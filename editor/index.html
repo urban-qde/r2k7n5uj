@@ -16,6 +16,7 @@
         <div class="panel-header">
           <div class="header-content">
             <h2>⚙️ Level Settings</h2>
+            <select id="flow-select"></select>
             <button class="theme-toggle" id="theme-toggle" title="Toggle theme">
               <span class="theme-icon">🌙</span>
             </button>
@@ -25,7 +26,12 @@
         <div class="settings-section">
           <div class="form-group">
             <label for="level-name">Level Name</label>
-            <input id="level-name" type="text" value="My Custom Level">
+            <input id="level-name" type="text" value="" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Tags</label>
+            <div id="view-tags-list" class="tags-list tags-compact"></div>
           </div>
           
           <div class="form-row">
@@ -42,8 +48,24 @@
           <div class="form-row">
             <div class="form-group">
               <label for="powerup-chance">PowerUp Spawn Chance</label>
-              <input id="powerup-chance" type="number" step="0.01" min="0" max="1" value="0">
+              <input id="powerup-chance" type="number" step="0.01" min="0" max="1" value="0.25">
             </div>
+            <div class="form-group">
+              <label for="multiplier-chance">Multiplier Spawn Chance</label>
+              <input id="multiplier-chance" type="number" step="0.01" min="0" max="1" value="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="shape-powerup-rule">Shape Power-Up Rule</label>
+            <select id="shape-powerup-rule">
+              <option value="default">Default</option>
+              <option value="off">Off</option>
+              <option value="multiplierOnly">Multiplier Only</option>
+            </select>
+          </div>
+          
+          <div class="form-row">
             <div class="form-group">
               <label for="level-mode">Game Mode</label>
               <select id="level-mode">
@@ -57,11 +79,11 @@
           <div class="form-row">
             <div class="form-group">
               <label for="gridWidth">Grid Width</label>
-              <input id="gridWidth" type="number" min="2" max="11" value="8">
+              <input id="gridWidth" type="number" min="2" max="11" value="9">
             </div>
             <div class="form-group">
               <label for="gridHeight">Grid Height</label>
-              <input id="gridHeight" type="number" min="2" max="11" value="8">
+              <input id="gridHeight" type="number" min="2" max="11" value="9">
             </div>
           </div>
           
@@ -69,16 +91,54 @@
             <label>Shape Groups</label>
             <div class="checkbox-group">
               <label class="checkbox-label">
-                <input type="checkbox" id="shape-easy">
+                <input type="checkbox" id="shape-easy" checked>
                 <span>Easy</span>
               </label>
               <label class="checkbox-label">
-                <input type="checkbox" id="shape-hard">
+                <input type="checkbox" id="shape-medium" checked>
+                <span>Medium</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="shape-hard" checked>
                 <span>Hard</span>
               </label>
               <label class="checkbox-label">
-                <input type="checkbox" id="shape-helper">
-                <span>Helper</span>
+                <input type="checkbox" id="shape-veryhard">
+                <span>Very Hard</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Layers</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="layer-base" checked>
+                <span>Base</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="layer-item" checked>
+                <span>Item</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="layer-overlay" checked>
+                <span>Overlay</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Feature Overrides</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="use-feature-overrides">
+                <span>Enable Overrides</span>
+              </label>
+            </div>
+            <div class="checkbox-group" style="margin-top:6px">
+              <label class="checkbox-label" title="Override whether the Drone feature is enabled for this level">
+                <input type="checkbox" id="override-drone-enabled" disabled>
+                <span>Drone Enabled</span>
               </label>
             </div>
           </div>
@@ -131,6 +191,79 @@
     </div>
     
     <div class="main-content">
+      <!-- Top-centered editor toolbar moved from right sidebar -->
+      <div class="editor-toolbar">
+        <div class="action-buttons">
+            <button class="action-btn undo-btn" data-action="undo">
+              <span class="btn-icon">↩️</span>
+              <span>Undo</span>
+            </button>
+            <button class="action-btn redo-btn" data-action="redo">
+              <span class="btn-icon">↪️</span>
+              <span>Redo</span>
+            </button>
+            <button class="action-btn new-btn" data-action="new">
+              <span class="btn-icon">🆕</span>
+              <span>New</span>
+            </button>
+            <button class="action-btn save-btn" data-action="save">
+              <span class="btn-icon">💾</span>
+              <span>Save File</span>
+            </button>
+            <button class="action-btn load-btn" data-action="load">
+              <span class="btn-icon">📁</span>
+              <span>Load File</span>
+            </button>
+            <button class="action-btn save-btn" data-action="save-level">
+              <span class="btn-icon">💾</span>
+              <span>Save</span>
+            </button>
+            <button class="action-btn upload-btn" data-action="upload">
+              <span class="btn-icon">🎮</span>
+              <span>Play</span>
+            </button>
+            <a id="levels-link" class="action-btn" href="/levels.html">
+              <span class="btn-icon">📚</span>
+              <span>Levels</span>
+            </a>
+        </div>
+        <div class="toolbar-level-nav">
+          <span class="level-nav-title">Navigate</span>
+          <div class="level-nav" id="level-nav">
+            <button id="prev-level" type="button" class="nav-button" aria-label="Previous level">‹</button>
+            <span id="level-nav-label" class="level-nav-label">— / —</span>
+            <button id="next-level" type="button" class="nav-button" aria-label="Next level">›</button>
+          </div>
+        </div>
+        <div class="toolbar-utility">
+          <button class="shortcuts-btn" aria-label="Keyboard Shortcuts">?</button>
+          <button class="shortcuts-btn" id="info-btn" aria-label="Grid Info">i</button>
+        </div>
+        <div id="shortcuts-popup" class="shortcuts-info hidden">
+          <h5>Shortcuts</h5>
+          <div class="shortcut">
+            <kbd>Shift</kbd> + <kbd>Click</kbd> = Clear cell
+          </div>
+          <div class="shortcut">
+            <kbd>Ctrl</kbd> + <kbd>S</kbd> = Save level
+          </div>
+          <div class="shortcut">
+            <kbd>Ctrl</kbd> + <kbd>Z</kbd> = Undo
+          </div>
+          <div class="shortcut">
+            <kbd>Ctrl</kbd> + <kbd>Y</kbd> = Redo
+          </div>
+          <div class="shortcut">
+            <kbd>Ctrl</kbd> + <kbd>←</kbd> = Previous level
+          </div>
+          <div class="shortcut">
+            <kbd>Ctrl</kbd> + <kbd>→</kbd> = Next level
+          </div>
+        </div>
+        <div id="info-popup" class="shortcuts-info hidden"></div>
+      </div>
+      <!-- Ordinal indicator for current level (visible only when editing) -->
+      <div id="level-ordinal" class="level-ordinal hidden" aria-live="polite"></div>
       <div class="grid-section">
         <div class="grid-header">
           <h3>🎮 Level Grid</h3>
@@ -161,66 +294,14 @@
         
         <div class="palette-grid" id="palette-buttons"></div>
         
-        <div class="actions-section">
-          <div class="action-buttons">
-            <button class="action-btn undo-btn" data-action="undo">
-              <span class="btn-icon">↩️</span>
-              <span>Undo</span>
-            </button>
-            <button class="action-btn redo-btn" data-action="redo">
-              <span class="btn-icon">↪️</span>
-              <span>Redo</span>
-            </button>
-            <button class="action-btn new-btn" data-action="new">
-              <span class="btn-icon">🆕</span>
-              <span>New</span>
-            </button>
-            <button class="action-btn save-btn" data-action="save">
-              <span class="btn-icon">💾</span>
-              <span>Save File</span>
-            </button>
-            <button class="action-btn load-btn" data-action="load">
-              <span class="btn-icon">📁</span>
-              <span>Load File</span>
-            </button>
-            <button class="action-btn save-btn" data-action="save-level">
-              <span class="btn-icon">💾</span>
-              <span>Save</span>
-            </button>
-            <button class="action-btn upload-btn" data-action="upload">
-              <span class="btn-icon">🎮</span>
-              <span>Play</span>
-            </button>
-            <button class="action-btn copy-btn" data-action="copy">
-              <span class="btn-icon">📋</span>
-              <span>Copy</span>
-            </button>
-            <button class="action-btn screenshot-btn" data-action="screenshot">
-              <span class="btn-icon">📸</span>
-              <span>Screenshot</span>
-            </button>
-            <a id="levels-link" class="action-btn" href="/levels.html">
-              <span class="btn-icon">📚</span>
-              <span>Levels</span>
-            </a>
-          </div>
-          <button class="shortcuts-btn" aria-label="Keyboard Shortcuts">?</button>
-          <div id="shortcuts-popup" class="shortcuts-info hidden">
-            <h5>Shortcuts</h5>
-            <div class="shortcut">
-              <kbd>Shift</kbd> + <kbd>Click</kbd> = Clear cell
-            </div>
-            <div class="shortcut">
-              <kbd>Ctrl</kbd> + <kbd>S</kbd> = Save level
-            </div>
-            <div class="shortcut">
-              <kbd>Ctrl</kbd> + <kbd>Z</kbd> = Undo
-            </div>
-            <div class="shortcut">
-              <kbd>Ctrl</kbd> + <kbd>Y</kbd> = Redo
-            </div>
+        <!-- Properties Panel: shows selected tile properties -->
+        <div class="properties-section">
+          <div class="panel-subheader">🧩 Properties</div>
+          <div id="properties-content" class="properties-content">
+            <div class="properties-empty">Select a tile to edit its properties.</div>
           </div>
         </div>
+        
       </div>
     </div>
   </div>
